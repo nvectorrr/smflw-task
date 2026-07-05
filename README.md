@@ -2,7 +2,7 @@
 
 Enterprise employee portal where you chat one-on-one with your Regional Manager, Michael Scott — streaming, in character, with persistent history. You can also **email** him.
 
-**Live:** https://dc4agmsg9ialh.cloudfront.net
+**Live:** https://dc4agmsg9ialh.cloudfront.net  
 **Or after registration:** 80f68ea2-234f-4f8d-81a0-a02c92df6a4e@mailslurp.net
 
 ## Stack
