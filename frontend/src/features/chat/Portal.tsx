@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
 import { useConversations } from "../../hooks/useConversations";
+import { useChatStore } from "../../hooks/useChatStore";
 import { Wordmark } from "../../components/Wordmark";
 import { MichaelAvatar } from "../../components/MichaelAvatar";
 import { ConversationSidebar } from "./ConversationSidebar";
@@ -11,6 +12,7 @@ import { SettingsModal } from "../settings/SettingsModal";
 export function Portal({ session, email }: { session: Session; email: string }) {
   const { items, activeId, setActiveId, create, remove, patchTitle } =
     useConversations(session.user.id);
+  const store = useChatStore(session);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
 
@@ -74,9 +76,10 @@ export function Portal({ session, email }: { session: Session; email: string }) 
         <main className="main">
           {activeId ? (
             <ChatConsole
-              session={session}
               conversationId={activeId}
-              onTitle={patchTitle}
+              state={store.get(activeId)}
+              onEnsureLoaded={store.load}
+              onSend={(text) => store.send(activeId, text, patchTitle)}
             />
           ) : (
             <div className="main__empty">

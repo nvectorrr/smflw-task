@@ -1,6 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import type { Session } from "@supabase/supabase-js";
-import { useChat } from "../../hooks/useChat";
+import type { ConversationState } from "../../hooks/useChatStore";
 import { MichaelAvatar } from "../../components/MichaelAvatar";
 import { MessageBubble } from "./MessageBubble";
 import { Composer } from "./Composer";
@@ -13,31 +12,33 @@ const SUGGESTIONS = [
 ];
 
 export function ChatConsole({
-  session,
   conversationId,
-  onTitle,
+  state,
+  onEnsureLoaded,
+  onSend,
 }: {
-  session: Session;
   conversationId: string;
-  onTitle: (id: string, title: string) => void;
+  state: ConversationState;
+  onEnsureLoaded: (id: string) => void;
+  onSend: (text: string) => void;
 }) {
-  const { messages, loading, streaming, error, send } = useChat({
-    session,
-    conversationId,
-    onTitle,
-  });
+  const { messages, loading, streaming, error } = state;
   const [input, setInput] = useState("");
   const [showSkeleton, setShowSkeleton] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    onEnsureLoaded(conversationId);
+  }, [conversationId, onEnsureLoaded]);
+
+  useEffect(() => {
+    setInput("");
+  }, [conversationId]);
 
   useLayoutEffect(() => {
     const el = scrollRef.current;
     if (el) el.scrollTop = el.scrollHeight;
   }, [messages, streaming, showSkeleton]);
-
-  useEffect(() => {
-    setInput("");
-  }, [conversationId]);
 
   useEffect(() => {
     if (!loading) {
@@ -49,7 +50,7 @@ export function ChatConsole({
   }, [loading]);
 
   function submit(text: string) {
-    send(text);
+    onSend(text);
     setInput("");
   }
 
