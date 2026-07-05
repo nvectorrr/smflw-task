@@ -1,0 +1,18 @@
+# Node
+node_modules/
+dist/
+
+# SST
+.sst/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Internal notes (not published)
+CLAUDE.md
+
+# IDE / OS
+.idea/
+.DS_Store
