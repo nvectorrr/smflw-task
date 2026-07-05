@@ -26,6 +26,7 @@ export function ChatConsole({
   const [input, setInput] = useState("");
   const [showSkeleton, setShowSkeleton] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     onEnsureLoaded(conversationId);
@@ -33,6 +34,7 @@ export function ChatConsole({
 
   useEffect(() => {
     setInput("");
+    inputRef.current?.focus();
   }, [conversationId]);
 
   useLayoutEffect(() => {
@@ -131,6 +133,7 @@ export function ChatConsole({
         onChange={setInput}
         onSend={() => submit(input)}
         busy={streaming}
+        inputRef={inputRef}
       />
     </section>
   );

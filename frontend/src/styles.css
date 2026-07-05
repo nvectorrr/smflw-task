@@ -784,9 +784,9 @@ button {
 .composer__input {
   flex: 1;
   resize: none;
-  min-height: 30px;
+  min-height: 38px;
   max-height: 180px;
-  padding: 6px 4px;
+  padding: 8px 4px;
   border: none;
   outline: none;
   background: transparent;

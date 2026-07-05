@@ -4,6 +4,7 @@ import { supabase } from "../../lib/supabase";
 import { Field } from "../../components/ui/Field";
 import { Button } from "../../components/ui/Button";
 import { Message, Notice } from "../../components/ui/Message";
+import { MAX_NAME_LENGTH, MAX_TITLE_LENGTH } from "../../lib/config";
 
 export function SettingsModal({
   session,
@@ -82,6 +83,7 @@ export function SettingsModal({
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               required
+              maxLength={MAX_NAME_LENGTH}
             />
             <Field
               label="job title"
@@ -90,6 +92,7 @@ export function SettingsModal({
               value={jobTitle}
               onChange={(e) => setJobTitle(e.target.value)}
               required
+              maxLength={MAX_TITLE_LENGTH}
             />
             <div className="modal__readonly">
               Signed in as <b>{session.user.email}</b>

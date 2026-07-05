@@ -14,6 +14,8 @@ declare const awslambda: {
 const MODEL = "claude-sonnet-4-6";
 const MAX_TOKENS = 1024;
 const MAX_HISTORY = 40;
+const MAX_MESSAGE_LENGTH = 4000;
+const MAX_META_LENGTH = 80;
 const DEFAULT_TITLES = new Set(["New chat", "Chat with Michael"]);
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -64,6 +66,8 @@ export const handler = awslambda.streamifyResponse(
       const text: string = (body.text ?? "").trim();
       if (!conversationId || !text)
         return fail("conversationId and text are required");
+      if (text.length > MAX_MESSAGE_LENGTH)
+        return fail(`Message is too long (max ${MAX_MESSAGE_LENGTH} characters).`);
 
       const supabase = createClient(
         process.env.SUPABASE_URL!,
@@ -79,8 +83,8 @@ export const handler = awslambda.streamifyResponse(
       const userId = userData.user.id;
 
       const meta = (userData.user.user_metadata ?? {}) as Record<string, string>;
-      const employeeName = (meta.full_name ?? "").trim();
-      const employeeTitle = (meta.job_title ?? "").trim();
+      const employeeName = (meta.full_name ?? "").trim().slice(0, MAX_META_LENGTH);
+      const employeeTitle = (meta.job_title ?? "").trim().slice(0, MAX_META_LENGTH);
       const systemBlocks: Anthropic.TextBlockParam[] = [
         {
           type: "text",

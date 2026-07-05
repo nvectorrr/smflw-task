@@ -3,6 +3,7 @@ import { supabase } from "../../lib/supabase";
 import { Field } from "../../components/ui/Field";
 import { Button } from "../../components/ui/Button";
 import { Message, Notice } from "../../components/ui/Message";
+import { MAX_NAME_LENGTH, MAX_TITLE_LENGTH } from "../../lib/config";
 
 export function AuthPanel() {
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -67,6 +68,7 @@ export function AuthPanel() {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               required
+              maxLength={MAX_NAME_LENGTH}
             />
             <Field
               label="job title"
@@ -77,6 +79,7 @@ export function AuthPanel() {
               value={jobTitle}
               onChange={(e) => setJobTitle(e.target.value)}
               required
+              maxLength={MAX_TITLE_LENGTH}
             />
           </>
         )}
