@@ -452,9 +452,11 @@ button {
   font-weight: 600;
 }
 .convo__badge {
-  margin-right: 6px;
-  color: var(--gold-ink);
-  font-size: 11px;
+  width: 14px;
+  height: 14px;
+  margin-right: 7px;
+  color: var(--gold);
+  vertical-align: -3px;
 }
 .convo__time {
   font-family: var(--mono);

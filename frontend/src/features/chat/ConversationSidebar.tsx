@@ -52,9 +52,20 @@ export function ConversationSidebar({
             >
               <span className="convo__title">
                 {c.source === "email" && (
-                  <span className="convo__badge" title="Received by email">
-                    ✉
-                  </span>
+                  <svg
+                    className="convo__badge"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    role="img"
+                    aria-label="Received by email"
+                  >
+                    <rect x="3" y="5" width="18" height="14" rx="2" />
+                    <path d="m3 7 9 6 9-6" />
+                  </svg>
                 )}
                 {c.title}
               </span>
