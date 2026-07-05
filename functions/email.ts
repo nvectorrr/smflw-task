@@ -48,6 +48,18 @@ function toPlainText(body: string): string {
   return text.replace(/\n{3,}/g, "\n\n").replace(/[ \t]+/g, " ").trim();
 }
 
+function stripEmailHeader(text: string): string {
+  const lines = text.split("\n");
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i].trim();
+    const isHeader = /^\*{0,2}(to|from|re|subject|cc|bcc|date)\*{0,2}\s*:/i.test(line);
+    if (line === "" || /^-{3,}$/.test(line) || isHeader) i++;
+    else break;
+  }
+  return lines.slice(i).join("\n").trim();
+}
+
 function threadKey(subject: string): string {
   return subject
     .replace(/^\s*(re|fwd|fw)\s*:\s*/i, "")
@@ -148,7 +160,7 @@ export const handler = async (event: any) => {
       .join(" ");
     const system =
       MICHAEL_SYSTEM_PROMPT +
-      `\n\nYOU ARE REPLYING TO AN EMAIL from one of your employees. ${who} Write a proper email reply: greet them by name, respond in character, and sign off as "— Michael" (or a Michael-style sign-off). Keep it readable — this is email, not chat.`;
+      `\n\nYOU ARE REPLYING TO AN EMAIL from one of your employees. ${who} Start directly with a greeting to them by name, then reply in character, and sign off at the end as "— Michael" (or a Michael-style sign-off). Do NOT write an email header block at the top — no "To:", "From:", "Subject:", "Re:", or "Date:" lines and no "---" separator. Just the message itself. Keep it readable — this is an email, not chat.`;
 
     const message = await anthropic.messages.create({
       model: MODEL,
@@ -157,11 +169,12 @@ export const handler = async (event: any) => {
       thinking: { type: "disabled" },
       messages: [...history, { role: "user", content: text }],
     });
-    const reply = message.content
-      .filter((b): b is Anthropic.TextBlock => b.type === "text")
-      .map((b) => b.text)
-      .join("")
-      .trim();
+    const reply = stripEmailHeader(
+      message.content
+        .filter((b): b is Anthropic.TextBlock => b.type === "text")
+        .map((b) => b.text)
+        .join("")
+    );
 
     if (reply) {
       await supabase.from("messages").insert({
