@@ -1,4 +1,5 @@
 import { Markdown } from "../../components/Markdown";
+import { MichaelAvatar } from "../../components/MichaelAvatar";
 import { TypingDots } from "./TypingDots";
 import type { ChatMessage } from "../../lib/types";
 
@@ -21,11 +22,7 @@ export function MessageBubble({
         (fresh ? " bubble-row--fresh" : "")
       }
     >
-      {!mine && (
-        <div className="avatar avatar--michael" aria-hidden="true">
-          MS
-        </div>
-      )}
+      {!mine && <MichaelAvatar />}
       <div className="bubble">
         {!mine && <div className="bubble__memo">Michael Scott · re: your message</div>}
         {waiting ? (

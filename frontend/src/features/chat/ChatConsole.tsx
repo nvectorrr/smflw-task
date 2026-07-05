@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { useChat } from "../../hooks/useChat";
+import { MichaelAvatar } from "../../components/MichaelAvatar";
 import { MessageBubble } from "./MessageBubble";
 import { Composer } from "./Composer";
 
@@ -57,9 +58,7 @@ export function ChatConsole({
   return (
     <section className="console" aria-label="Conversation with Michael Scott">
       <header className="console__head">
-        <div className="avatar avatar--michael" aria-hidden="true">
-          MS
-        </div>
+        <MichaelAvatar />
         <div className="console__who">
           <strong>Michael Scott</strong>
           <span className="presence">
@@ -81,9 +80,7 @@ export function ChatConsole({
 
         {empty && (
           <div className="welcome">
-            <div className="avatar avatar--michael avatar--xl" aria-hidden="true">
-              MS
-            </div>
+            <MichaelAvatar xl />
             <h2>Michael Scott is in the office.</h2>
             <p>
               World's Best Boss, at your service. Ask about time off, a coworker

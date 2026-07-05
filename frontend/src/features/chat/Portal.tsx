@@ -3,6 +3,7 @@ import type { Session } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
 import { useConversations } from "../../hooks/useConversations";
 import { Wordmark } from "../../components/Wordmark";
+import { MichaelAvatar } from "../../components/MichaelAvatar";
 import { ConversationSidebar } from "./ConversationSidebar";
 import { ChatConsole } from "./ChatConsole";
 import { SettingsModal } from "../settings/SettingsModal";
@@ -79,9 +80,7 @@ export function Portal({ session, email }: { session: Session; email: string }) 
             />
           ) : (
             <div className="main__empty">
-              <div className="avatar avatar--michael avatar--xl" aria-hidden="true">
-                MS
-              </div>
+              <MichaelAvatar xl />
               <h2>Welcome to Dunder Mifflin Infinity.</h2>
               <p>Start a new conversation with Michael to get going.</p>
               <button className="composer__send" onClick={newChat}>
