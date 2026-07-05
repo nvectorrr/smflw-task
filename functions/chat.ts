@@ -81,7 +81,13 @@ export const handler = awslambda.streamifyResponse(
       const meta = (userData.user.user_metadata ?? {}) as Record<string, string>;
       const employeeName = (meta.full_name ?? "").trim();
       const employeeTitle = (meta.job_title ?? "").trim();
-      let system = MICHAEL_SYSTEM_PROMPT;
+      const systemBlocks: Anthropic.TextBlockParam[] = [
+        {
+          type: "text",
+          text: MICHAEL_SYSTEM_PROMPT,
+          cache_control: { type: "ephemeral" },
+        },
+      ];
       if (employeeName || employeeTitle) {
         const who = [
           employeeName && `Their name is ${employeeName}.`,
@@ -89,7 +95,10 @@ export const handler = awslambda.streamifyResponse(
         ]
           .filter(Boolean)
           .join(" ");
-        system += `\n\nWHO YOU ARE TALKING TO RIGHT NOW\nYou are speaking with one of your employees. ${who} Address them by their first name naturally (not every message), and tailor your boss-wisdom to their role. Never claim you don't know who they are — you are their manager, of course you know them.`;
+        systemBlocks.push({
+          type: "text",
+          text: `WHO YOU ARE TALKING TO RIGHT NOW\nYou are speaking with one of your employees. ${who} Address them by their first name naturally (not every message), and tailor your boss-wisdom to their role. Never claim you don't know who they are — you are their manager, of course you know them.`,
+        });
       }
 
       const { data: convo, error: convoErr } = await supabase
@@ -124,21 +133,32 @@ export const handler = awslambda.streamifyResponse(
           .eq("id", conversationId);
       }
 
-      const messages = [...history, { role: "user" as const, content: text }];
+      const convoMessages: Anthropic.MessageParam[] = [
+        ...history,
+        {
+          role: "user",
+          content: [{ type: "text", text, cache_control: { type: "ephemeral" } }],
+        },
+      ];
 
       let full = "";
       const llm = anthropic.messages.stream({
         model: MODEL,
         max_tokens: MAX_TOKENS,
-        system,
+        system: systemBlocks,
         thinking: { type: "disabled" },
-        messages,
+        messages: convoMessages,
       });
       llm.on("text", (delta) => {
         full += delta;
         send(stream, { delta });
       });
-      await llm.finalMessage();
+      const final = await llm.finalMessage();
+      console.log("cache_usage", {
+        write: final.usage.cache_creation_input_tokens,
+        read: final.usage.cache_read_input_tokens,
+        input: final.usage.input_tokens,
+      });
 
       if (full.trim()) {
         await supabase.from("messages").insert({
