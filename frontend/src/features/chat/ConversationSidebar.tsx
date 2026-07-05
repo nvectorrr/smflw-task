@@ -50,7 +50,14 @@ export function ConversationSidebar({
               onClick={() => onSelect(c.id)}
               aria-current={c.id === activeId}
             >
-              <span className="convo__title">{c.title}</span>
+              <span className="convo__title">
+                {c.source === "email" && (
+                  <span className="convo__badge" title="Received by email">
+                    ✉
+                  </span>
+                )}
+                {c.title}
+              </span>
               <span className="convo__time">{timeAgo(c.created_at)}</span>
             </button>
             <button

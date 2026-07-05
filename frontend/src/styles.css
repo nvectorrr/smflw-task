@@ -451,6 +451,11 @@ button {
 .convo--active .convo__title {
   font-weight: 600;
 }
+.convo__badge {
+  margin-right: 6px;
+  color: var(--gold-ink);
+  font-size: 11px;
+}
 .convo__time {
   font-family: var(--mono);
   font-size: 10px;

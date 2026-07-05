@@ -2,6 +2,7 @@ export type Conversation = {
   id: string;
   title: string;
   created_at: string;
+  source?: string;
 };
 
 export type ChatMessage = {

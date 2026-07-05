@@ -11,7 +11,7 @@ export function useConversations(userId: string) {
     let alive = true;
     supabase
       .from("conversations")
-      .select("id,title,created_at")
+      .select("id,title,created_at,source")
       .order("created_at", { ascending: false })
       .then(({ data, error }) => {
         if (!alive) return;
@@ -33,7 +33,7 @@ export function useConversations(userId: string) {
     const { data, error } = await supabase
       .from("conversations")
       .insert({ user_id: userId, title: "New chat" })
-      .select("id,title,created_at")
+      .select("id,title,created_at,source")
       .single();
     if (error) throw error;
     const convo = data as Conversation;
